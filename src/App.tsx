@@ -9,6 +9,7 @@ import shaker from "./assets/shaker.mp3";
 import tambourine from "./assets/tambourine.mp3";
 import cymbal from "./assets/cymbal.mp3";
 import cowbell from "./assets/cowbell.mp3";
+import { useState } from "react";
 
 const sounds = [
   { key: "Q", name: "Kick", src: kick },
@@ -23,7 +24,18 @@ const sounds = [
 ];
 
 function App() {
+  const [display, setDisplay] = useState("");
+
+  const stringCut = (str: string) => {
+    const parts = str.split("/");
+    const fileName = parts.pop() || "";
+    const result = fileName.split(".")[0];
+    return result;
+  };
+
   const handlePlay = (src: any) => {
+    const toDisplay = stringCut(src);
+    setDisplay(toDisplay);
     const sound = new Howl({
       src,
       html5: true,
@@ -70,19 +82,23 @@ function App() {
   };
 
   return (
-    <div id="drum-machine" onKeyDown={handleKeyDown} tabIndex={0}>
-      <div id="display"></div>
-      <div id="pad-container">
-        {sounds.map((sound) => (
-          <button
-            className="drum-pad"
-            id={sound.name}
-            key={sound.key}
-            onClick={() => handlePlay(sound.src)}
-          >
-            {sound.key}
-          </button>
-        ))}
+    <div id="body">
+      <div id="drum-machine" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div id="display">
+          <h2>{display}</h2>
+        </div>
+        <div id="pad-container">
+          {sounds.map((sound) => (
+            <button
+              className="drum-pad"
+              id={sound.name}
+              key={sound.key}
+              onClick={() => handlePlay(sound.src)}
+            >
+              {sound.key}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
